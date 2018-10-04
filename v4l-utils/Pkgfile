@@ -1,0 +1,22 @@
+# Description: A collection of various video4linux (V4L) and DVB utilities, as well as libraries
+# URL: http://freecode.com/projects/libv4l
+# Maintainer: Adrian Siekierka, kontakt at asie dot pl
+# Packager: Adrian Siekierka, kontakt at asie dot pl
+
+name=v4l-utils
+version=1.10.0
+release=1
+source=(http://linuxtv.org/downloads/$name/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+
+	./configure \
+		--prefix=/usr \
+		--disable-nls
+
+	make
+	make DESTDIR=$PKG -j1 install
+	rm $PKG/usr/bin/ivtv-ctl
+}
+

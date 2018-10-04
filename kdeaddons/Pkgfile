@@ -1,0 +1,33 @@
+# Description:	Additional plugins and scripts for some KDE applications
+# URL:		http://www.kde.org
+# Maintainer:	Alan Mizrahi, alan at mizrahi dot com dot ve
+# Packager:	sten, nick dot steeves at shaw dot ca
+# Depends on:	kdegraphics, kdemultimedia, kdenetwork, kdepim, kdeutils, kdegames
+
+name=kdeaddons
+version=3.5.10
+release=2
+source=(http://download.kde.org/Attic/$version/src/$name-$version.tar.bz2 patch-katetabbarext)
+
+build() {
+	# To prevent compilation of a particular component, set DO_NOT_COMPILE
+	# to a subset of:
+
+	# atlantikdesigner doc kaddressbook-plugins kate kfile-plugins
+	# kicker-applets knewsticker-scripts konq-plugins ksig noatun-plugins
+	# renamedlgplugins
+
+	# Eg:
+	# export DO_NOT_COMPILE="knewsticker-scripts noatun-plugins"
+
+	export DO_NOT_COMPILE="$DO_NOT_COMPILE doc"
+
+	cd $name-$version
+	patch -p0 < $SRC/patch-katetabbarext
+	./configure --prefix=/usr \
+		--disable-dependency-tracking \
+		--disable-debug \
+		--enable-final
+	make
+	make DESTDIR=$PKG install
+}

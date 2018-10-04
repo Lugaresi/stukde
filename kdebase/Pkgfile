@@ -1,0 +1,48 @@
+# Description:	Basic applications for the KDE system
+# URL:		http://www.kde.org
+# Maintainer:	Alan Mizrahi, alan at mizrahi dot com dot ve
+# Packager:	sten, nick dot steeves at shaw dot ca
+# Depends on:	xorg-imake, xorg-iceauth, kdelibs, ghostscript, hal, dbus-qt3, samba, cdparanoia, lame, linux-pam
+
+name=kdebase
+version=3.5.10
+release=2
+source=(http://download.kde.org/Attic/$version/src/$name-$version.tar.bz2 kdm crux.desktop preloadkde \
+	kdebase-3.5.10-ossl-1.x.patch patch-fontmap patch-easyvector)
+
+build() {
+	# To prevent compilation of a particular component, set DO_NOT_COMPILE
+	# to a subset of:
+
+	# libkonq applnk doc drkonqi kappfinder kate kcheckpass kcminit kdcop
+	# kdebugdialog kdeeject kdepasswd kdeprint kdesu kdialog kdmlib kfind
+	# khelpcenter khotkeys kioslave klipper kmenuedit knetattach konsole
+	# kpager kpersonalizer kreadconfig kscreensaver ksplashml kstart
+	# ksysguard ksystraycmd ktip kwin kxkb l10n nsplugins pics konqueror
+	# ksmserver kicker kcontrol kdesktop kdm
+
+	# Eg:
+	# export DO_NOT_COMPILE="drkonqi kappfinder kdebugdialog kfind khelpcenter knetattach kpager ktip"
+
+	export DO_NOT_COMPILE="$DO_NOT_COMPILE doc"
+
+	cd $name-$version
+        patch -p1 < $SRC/kdebase-3.5.10-ossl-1.x.patch
+	patch -p0 < $SRC/patch-fontmap
+        patch -p0 < $SRC/patch-easyvector
+	./configure --prefix=/usr \
+		--with-pam=yes \
+		--disable-debug \
+		--disable-dependency-tracking \
+		--enable-final \
+		--with-extra-includes=/usr/include/samba-4.0 \
+                --without-java
+	make
+	make DESTDIR=$PKG GENKDMCONF_FLAGS="--no-old" install
+	mkdir -p $PKG/etc/rc.d
+	install -m 755 ../kdm $PKG/etc/rc.d/kdm
+	install -m 644 ../crux.desktop $PKG/usr/share/services/searchproviders/crux.desktop
+	install -m 755 ../preloadkde $PKG/usr/bin/preloadkde
+	mkdir -m 1777 $PKG/media
+	rm -rf $PKG/usr/share/{doc,config/kdm/README,apps/konsole/README.*}
+}

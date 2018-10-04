@@ -1,0 +1,15 @@
+d5fcdb478e741831e6ce992f670eba1e  10888-bt.tar.gz
+43cd55ed15f63b5738d620ef9f9fd568  kdelibs-3.5.10.tar.bz2
+35b14a01dc392bbfcdd0e1b24a0bac57  patch-kate_part_katehighlight_cpp
+4bbb43097b4a352ad7a3bc766bf122e6  patch-kdelibs-3.5.10-gcc6.patch
+f6314e2c4323854c140a9dc5bfe745da  patch-kdelibs-3.5.10-gcc7.patch
+588449dbd18273b0e4c4e31dbc0537b4  patch-kdeprint-cups16support
+809b317f331f34a44475c1e616bc18b5  patch-kdeprint-cups2support
+d5199c4d7b088aa4805b164c943e86b7  patch-kdeprint_cups_cupsdconf2_cups-util_c
+17274a16bb61ca1fe758de336a3ee0ec  patch-kio_kio_kiodirwatch_cpp
+0b54f1a1c8dd80f99539166bb17cd3aa  patch-kio_kssl_kopenssl_cc
+833638eb86e3cc8837934f9cbffef664  patch-kio_kssl_kopenssl_h
+ce2eb41b6783f75c20ae550e72d5d46f  patch-kio_kssl_ksmimecrypto_cc
+e0bd2fab637df7aea3592271aa5725d0  patch-kio_kssl_ksslcertificate_cc
+f4a4f5e41efc08856b865052c18ed7eb  patch-kioslave_ftp_ftp_cc
+4c53bafada93ca660a9b1ea5ddf61bc0  patch-std

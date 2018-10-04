@@ -1,0 +1,102 @@
+
+1) How can I start KDE ?
+
+    a) The good: using runlevel 3 for graphical login
+
+    Modify your /etc/inittab so it looks similar to this:
+
+    id:3:initdefault:
+    rc::sysinit:/etc/rc
+    rs:S1:wait:/etc/rc.single
+    rm:23:wait:/etc/rc.multi
+    rd:06:wait:/etc/rc.shutdown
+    su:S:wait:/sbin/sulogin -p
+    c1:123:respawn:/sbin/fgetty tty1 --noclear
+    c2:23:respawn:/sbin/fgetty tty2 --noclear
+    c3:23:respawn:/sbin/fgetty tty3 --noclear
+    c4:23:respawn:/sbin/fgetty tty4 --noclear
+    ca::ctrlaltdel:/sbin/shutdown -t3 -r now
+    x:3:respawn:/usr/bin/kdm -nodaemon -config /etc/X11/kdm/kdmrc
+
+    Then kdm will run when entering runlevel 3.  As you can see in this example,
+    I'm using /etc/X11/kdm to store the kdm configuration files.  I advise you
+    to copy the default kdm configuration from /usr/share/config/kdm to /etc/X11/kdm
+    so that it wont be overwritten by updating kdebase.
+    Another option would be to add:
+    ---------snip---------
+    UPGRADE         ^usr/share/config/kdm/.*$                NO
+    ---------snap---------
+    to /etc/pkgadd.conf so that it doesn't overwrite your kdm configuration when
+    upgrading.
+
+    b) The bad: using startx
+
+    vi ~/.xinitrc
+    ---------snip---------
+    exec startkde
+    ---------snap---------
+
+    c) The ugly: using /etc/rc.d/kdm
+
+    vi /etc/X11/xdm/Xsession
+    ---------snip---------
+
+    case $1 in
+        failsafe)
+        exec xterm -geometry 80x24-0-0
+        ;;
+        kde)
+        exec /usr/bin/startkde
+        ;;
+        esac
+
+    ---------snap---------
+    ^ add the Xsession "kde"
+
+    Then add kdm to the services to be started in /etc/rc.conf
+
+2) Why are there so many libraries?
+
+    You don't need to install/compile all of them, but some nice functions
+    won't run without.
+
+3) My audio skips!
+
+    To enable real-time audio, you can use artswrapper
+    as root, "chmod u+s /usr/bin/artswrapper"
+
+4) Konqueror doesn't resume a partially-transfered file when using
+    sftp://hostname.
+
+    Periodically, updating either openssl and openssh breaks the sftp://
+    KIO-Slave.  The fix is to recompile and update openssh, and then do the
+    same for kdelibs.
+
+5) The process for the fish://xxx.xxx.xxx.xxx protocol died unexpectedly
+
+    This is a known bug, read: http://bugs.kde.org/show_bug.cgi?id=145123
+    Some people avoid it by defining KDE_FORK_SLAVES=true in their environment.
+    If you constantly hit this bug, and the workaround works for you, you might
+    want to define KDE_FORK_SLAVES in the /usr/bin/startkde, or in a script
+    located in $HOME/.kde/env/
+
+6) Can I omit particular applications during the install?
+
+    Yes you can, by defining the DO_NOT_COMPILE variable in the Pkgfile.
+    Each Pkgfile provides a complete list of the possible apps/modules that
+    can be disabled for the package, but beware, some packages won't build
+    if you disable something important. Others will build, but later on
+    another package won't build because it expects that app you disabled
+    previously .
+    In general, the provided example is what I personally use, it works for
+    me but is not guarenteed to fill your needs.
+
+7) I have a suggestion, question, or constructive criticism for you!
+
+    Good, send it to alan at mizrahi dot com dot ve, I guarantee you an answer,
+    but please be patient.
+
+--
+written by Daniel Mueller
+maintained by Nick Steeves from October 2004 to September 2006
+maintained by Alan Mizrahi since October 2006

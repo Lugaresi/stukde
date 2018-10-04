@@ -1,0 +1,36 @@
+# Description: Utilities for the KDE integrated X11 desktop
+# URL: http://www.kde.org
+# Maintainer: Alan Mizrahi, alan at mizrahi dot com dot ve
+# Packager: sten, nick dot steeves at shaw dot ca
+# Depends on: kdebase, libgmp, net-snmp
+
+name=kdeutils
+version=3.5.10
+release=2
+source=(http://download.kde.org/Attic/$version/src/$name-$version.tar.bz2 shredder.desktop patch-python patch-strlcat)
+
+build() {
+	# To prevent compilation of a particular component, set DO_NOT_COMPILE
+	# to a subset of:
+
+	# ark charselectapplet doc kcalc kcharselect kdelirc kdessh kdf kedit
+	# floppy kgpg khexedit kjots klaptopdaemon kmilo kregexpeditor ksim
+	# ktimer kwallet superkaramba
+
+	# Eg:
+	# export DO_NOT_COMPILE="charselectapplet kcharselect kdelirc kdessh kdf kfloppy kjots kmilo ktimer superkaramba"
+
+	export DO_NOT_COMPILE="$DO_NOT_COMPILE doc"
+
+	cd $name-$version
+        patch -p0 -i $SRC/patch-python
+        patch -p1 -i $SRC/patch-strlcat
+	./configure --prefix=/usr \
+		--disable-debug \
+		--disable-dependency-tracking \
+		--enable-final
+	make
+	make DESTDIR=$PKG install
+	install -m 644 $SRC/shredder.desktop $PKG/usr/share/apps/konqueror/servicemenus/shredder.desktop
+	rm -rf $PKG/usr/share/doc
+}

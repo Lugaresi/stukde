@@ -1,0 +1,85 @@
+--- hal-0.5.14/hald/linux/addons/addon-input.c	2012-11-30 20:30:49.059747939 +0100
++++ hal-0.5.14/hald/linux/addons/addon-input.c.orig	2012-11-30 20:30:34.106847507 +0100
+@@ -41,7 +41,7 @@
+ #else
+   #include <linux/input.h>
+ #endif
+-#include <glib/gmain.h>
++#include <glib.h>
+ #include <glib/gprintf.h>
+ #include <dbus/dbus-glib-lowlevel.h>
+ 
+--- hal-0.5.14/hald/linux/addons/addon-ipw-killswitch.c	2012-11-30 20:33:03.027774587 +0100
++++ hal-0.5.14/hald/linux/addons/addon-ipw-killswitch.c.orig	2012-11-30 20:32:56.135898669 +0100
+@@ -36,7 +36,6 @@
+ #include <unistd.h> 
+ 
+ #include <glib.h>
+-#include <glib/gmain.h>
+ #include <glib/gstdio.h>
+ #include <dbus/dbus-glib.h>
+ #include <dbus/dbus-glib-lowlevel.h>
+--- hal-0.5.14/hald/linux/addons/addon-leds.c	2012-11-30 20:33:41.345644589 +0100
++++ hal-0.5.14/hald/linux/addons/addon-leds.c.orig	2012-11-30 20:33:28.105961898 +0100
+@@ -36,7 +36,6 @@
+ #include <unistd.h> 
+ 
+ #include <glib.h>
+-#include <glib/gmain.h>
+ #include <glib/gstdio.h>
+ #include <dbus/dbus-glib.h>
+ #include <dbus/dbus-glib-lowlevel.h>
+--- hal-0.5.14/hald/linux/addons/addon-rfkill-killswitch.c	2012-11-30 20:34:10.870397036 +0100
++++ hal-0.5.14/hald/linux/addons/addon-rfkill-killswitch.c.orig	2012-11-30 20:34:02.208296129 +0100
+@@ -36,7 +36,6 @@
+ #include <unistd.h> 
+ 
+ #include <glib.h>
+-#include <glib/gmain.h>
+ #include <glib/gstdio.h>
+ #include <dbus/dbus-glib.h>
+ #include <dbus/dbus-glib-lowlevel.h>
+--- hal-0.5.14/hald/linux/addons/addon-storage.c	2012-11-30 20:34:41.711316759 +0100
++++ hal-0.5.14/hald/linux/addons/addon-storage.c.orig	2012-11-30 20:34:29.701790412 +0100
+@@ -39,7 +39,7 @@
+ #include <string.h>
+ #include <sys/ioctl.h>
+ #include <unistd.h>
++#include <glib.h>
+-#include <glib/gmain.h>
+ #include <dbus/dbus-glib.h>
+ #include <dbus/dbus-glib-lowlevel.h>
+ 
+--- hal-0.5.14/hald/linux/addons/addon-imac-backlight.c	2012-11-30 20:35:23.761661139 +0100
++++ hal-0.5.14/hald/linux/addons/addon-imac-backlight.c.orig	2012-11-30 20:35:13.948413930 +0100
+@@ -29,7 +29,7 @@
+ #include <stdlib.h>
+ #include <sys/io.h>
+ 
++#include <glib.h>
+-#include <glib/gmain.h>
+ #include <dbus/dbus-glib.h>
+ #include <dbus/dbus-glib-lowlevel.h>
+ 
+--- hal-0.5.14/hald/linux/addons/addon-macbookpro-backlight.c	2012-11-30 20:35:54.018506630 +0100
++++ hal-0.5.14/hald/linux/addons/addon-macbookpro-backlight.c.orig	2012-11-30 20:35:43.656189636 +0100
+@@ -39,7 +39,7 @@
+ #include <pci/pci.h>
+ #include <unistd.h> 
+ 
++#include <glib.h>
+-#include <glib/gmain.h>
+ #include <dbus/dbus-glib.h>
+ #include <dbus/dbus-glib-lowlevel.h>
+ 
+--- hal-0.5.14/hald/linux/addons/addon-generic-backlight.c.orig	2012-11-30 20:53:37.761702923 +0100
++++ hal-0.5.14/hald/linux/addons/addon-generic-backlight.c	2012-11-30 20:53:53.949760339 +0100
+@@ -35,7 +35,7 @@
+ #include <sys/stat.h>
+ #include <unistd.h> 
+ 
+-#include <glib/gmain.h>
++#include <glib.h>
+ #include <dbus/dbus-glib.h>
+ #include <dbus/dbus-glib-lowlevel.h>
+ 

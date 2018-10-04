@@ -1,0 +1,28 @@
+drwxr-xr-x	root/root	lib/
+drwxr-xr-x	root/root	lib/udev/
+drwxr-xr-x	root/root	lib/udev/rules.d/
+-rw-r--r--	root/root	lib/udev/rules.d/60-openobex.rules
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+drwxr-xr-x	root/root	usr/include/
+drwxr-xr-x	root/root	usr/include/openobex/
+-rw-r--r--	root/root	usr/include/openobex/obex.h
+-rw-r--r--	root/root	usr/include/openobex/obex_const.h
+-rw-r--r--	root/root	usr/include/openobex/version.h
+drwxr-xr-x	root/root	usr/lib/
+drwxr-xr-x	root/root	usr/lib/cmake/
+drwxr-xr-x	root/root	usr/lib/cmake/OpenObex-1.7.1/
+-rw-r--r--	root/root	usr/lib/cmake/OpenObex-1.7.1/openobex-config-version.cmake
+-rw-r--r--	root/root	usr/lib/cmake/OpenObex-1.7.1/openobex-config.cmake
+-rw-r--r--	root/root	usr/lib/cmake/OpenObex-1.7.1/openobex-target-release.cmake
+-rw-r--r--	root/root	usr/lib/cmake/OpenObex-1.7.1/openobex-target.cmake
+lrwxrwxrwx	root/root	usr/lib/libopenobex.so -> libopenobex.so.2
+-rwxr-xr-x	root/root	usr/lib/libopenobex.so.1.7.1
+lrwxrwxrwx	root/root	usr/lib/libopenobex.so.2 -> libopenobex.so.1.7.1
+drwxr-xr-x	root/root	usr/lib/pkgconfig/
+-rw-r--r--	root/root	usr/lib/pkgconfig/openobex.pc
+drwxr-xr-x	root/root	usr/sbin/
+-rwxr-xr-x	root/root	usr/sbin/obex-check-device
+drwxr-xr-x	root/root	usr/share/
+drwxr-xr-x	root/root	usr/share/man/
+drwxr-xr-x	root/root	usr/share/man/man1/

@@ -1,0 +1,18 @@
+--- kdeprint/cups/ipprequest.cpp.orig	2016-10-12 02:08:38.650774763 +0200
++++ kdeprint/cups/ipprequest.cpp	2016-10-12 02:09:00.367442370 +0200
+@@ -751,7 +751,7 @@ void IppRequest::setMap(const QMap<QStri
+ 	cupsFreeOptions(n, options);
+ 
+ 	// find an remove that annoying "document-format" attribute
+-#if CUPS_VERSION_MAJOR == 1 && CUPS_VERSION_MINOR >= 2
++#if (CUPS_VERSION_MAJOR == 1 && CUPS_VERSION_MINOR >= 2) || CUPS_VERSION_MAJOR == 2
+     ipp_attribute_t *attr = ippFindAttribute(request_, "document-format", IPP_TAG_NAME);
+     ippDeleteAttribute(request_, attr);
+ #else
+@@ -777,4 +777,4 @@ ipp_attribute_t* IppRequest::first()
+ #else // HAVE_CUPS_1_6
+ ipp_attribute_t* IppRequest::first()
+ { return (request_ ? request_->attrs : NULL); }
+-#endif // HAVE_CUPS_1_6
+\ No newline at end of file
++#endif // HAVE_CUPS_1_6

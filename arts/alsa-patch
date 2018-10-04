@@ -1,0 +1,11 @@
+--- configure.orig	2017-03-21 20:03:27.166577820 +0100
++++ configure	2017-03-21 20:03:41.753244296 +0100
+@@ -39666,7 +39666,7 @@ int
+ main ()
+ {
+ 
+-      #if (SND_LIB_MAJOR == 1) && (SND_LIB_MINOR == 0)
++      #if (SND_LIB_MAJOR == 1) && (SND_LIB_MINOR >= 0)
+         /* we have ALSA 1.x */
+       #else
+         #error not ALSA 1.x

@@ -1,0 +1,92 @@
+--- kopete/kopete/contactlist/kopetegroupviewitem.cpp.orig	2012-10-10 02:23:27.390016631 +0200
++++ kopete/kopete/contactlist/kopetegroupviewitem.cpp	2012-10-10 02:34:56.375035595 +0200
+@@ -168,7 +168,7 @@ void KopeteGroupViewItem::refreshDisplay
+ 	// Sorting in this slot is extremely expensive as it's called dozens of times and
+ 	// the sorting itself is rather slow. Therefore we call delayedSort, which tries
+ 	// to group multiple sort requests into one.
+-	using namespace Kopete::UI::ListView;
++	using namespace Kopete::UI;
+ 	if ( ListView::ListView *lv = dynamic_cast<ListView::ListView *>( listView() ) )
+ 		lv->delayedSort();
+ 	else
+--- kopete/kopete/chatwindow/krichtexteditpart.cpp.orig	2012-10-10 02:36:33.112038458 +0200
++++ kopete/kopete/chatwindow/krichtexteditpart.cpp	2012-10-10 02:36:48.445039489 +0200
+@@ -38,7 +38,7 @@ public:
+ KopeteRichTextEditPart::KopeteRichTextEditPart( QWidget *wparent, const char *wname, QObject*, const char*, const QStringList& )
+ 	: KParts::ReadOnlyPart( wparent, wname ? wname : "rich_text_part" )
+ {
+-	KopeteRichTextEditPart::KopeteRichTextEditPart( wparent, wname, false );
++	KopeteRichTextEditPart( wparent, wname, false );
+ }
+ 
+ KopeteRichTextEditPart::KopeteRichTextEditPart( QWidget *parent, const char *name, int capabilities )
+--- kopete/protocols/testbed/testbedaccount.h.orig	2012-10-10 02:40:40.484046308 +0200
++++ kopete/protocols/testbed/testbedaccount.h	2012-10-10 02:40:51.946045375 +0200
+@@ -59,7 +59,7 @@ public:
+ 	/**
+ 	 * 'Connect' to the testbed server.  Only sets myself() online.
+ 	 */
+-	virtual void connect( const Kopete::OnlineStatus& initialStatus = Kopete::OnlineStatus::OnlineStatus() );
++	virtual void connect( const Kopete::OnlineStatus& initialStatus = Kopete::OnlineStatus() );
+ 	/**
+ 	 * Disconnect from the server.  Only sets myself() offline.
+ 	 */
+--- kopete/protocols/groupwise/libgroupwise/rtf.cc.orig	2012-10-10 02:52:56.452065988 +0200
++++ kopete/protocols/groupwise/libgroupwise/rtf.cc	2012-10-10 02:53:09.676066193 +0200
+@@ -2235,7 +2235,7 @@ void Level::setText(const char *str)
+ 
+         FontDef& def = p->fonts[m_nFont-1];
+ 
+-        char *pp = strchr(str, ';');
++        const char *pp = strchr(str, ';');
+         unsigned size;
+         if (pp != NULL)
+            size = (pp - str);
+--- kopete/protocols/groupwise/libgroupwise/rtf.ll.orig	2012-10-10 02:42:54.904049287 +0200
++++ kopete/protocols/groupwise/libgroupwise/rtf.ll	2012-10-10 02:52:38.580065598 +0200
+@@ -570,10 +570,10 @@ void Level::setText(const char *str)
+ 
+         FontDef& def = p->fonts[m_nFont-1];
+ 
+-        char *pp = strchr(str, ';');
++        const char *pp = strchr(str, ';');
+         unsigned size;
+         if (pp != NULL)
+-           size = (pp - str);
++           size = (char*) (pp - str);
+         else
+            size = strlen(str);
+ 
+--- kopete/protocols/oscar/liboscar/rtf.cc.orig	2012-10-10 02:59:00.842076228 +0200
++++ kopete/protocols/oscar/liboscar/rtf.cc	2012-10-10 02:59:40.050077553 +0200
+@@ -2131,7 +2131,7 @@ void Level::setText(const char *str)
+ 
+         FontDef& def = p->fonts[m_nFont-1];
+ 
+-        char *pp = strchr(str, ';');
++        const char *pp = strchr(str, ';');
+         unsigned size;
+         if (pp != NULL)
+            size = (pp - str);
+--- kopete/protocols/oscar/liboscar/rtf.ll.orig	2012-10-10 02:59:07.907076112 +0200
++++ kopete/protocols/oscar/liboscar/rtf.ll	2012-10-10 02:59:26.338077209 +0200
+@@ -568,7 +568,7 @@ void Level::setText(const char *str)
+ 
+         FontDef& def = p->fonts[m_nFont-1];
+ 
+-        char *pp = strchr(str, ';');
++        const char *pp = strchr(str, ';');
+         unsigned size;
+         if (pp != NULL)
+            size = (pp - str);
+--- kopete/libkopete/avdevice/videodevice.h.orig	2012-11-14 10:36:11.533037508 +0000
++++ kopete/libkopete/avdevice/videodevice.h	2012-11-14 10:36:49.341038445 +0000
+@@ -52,7 +52,7 @@
+ 
+ #include <linux/fs.h>
+ #include <linux/kernel.h>
+-#include <linux/videodev.h>
++#include <libv4l1-videodev.h>
+ #define VIDEO_MODE_PAL_Nc  3
+ #define VIDEO_MODE_PAL_M   4
+ #define VIDEO_MODE_PAL_N   5

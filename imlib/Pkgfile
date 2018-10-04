@@ -1,0 +1,40 @@
+# Description: An image loading and rendering library.
+# URL: http://ftp.acc.umu.se/pub/GNOME/sources/imlib/1.9/
+# Maintainer: Danny Rawlins, monster dot romster at gmail dot com
+# Packager: Daniel Mueller, daniel at danm dot de
+# Depends on: gtk1 giflib libtiff libpng
+
+name=imlib
+version=1.9.15
+release=3
+source=(http://ftp.gnome.org/pub/GNOME/sources/imlib/${version%.*}/imlib-$version.tar.bz2
+	imlib-1.9.15-configure.patch
+	imlib-1.9.15-security.patch
+	imlib-1.9.15-bpp16-CVE-2007-3568.patch
+	imlib-1.9.15-fix-rendering.patch
+	imlib-1.9.15-asneeded.patch
+        imlib-1.9.15-newlibs.patch
+	gtk-1-for-imlib.m4.bz2)
+
+build() {
+	cd imlib-$version
+
+	patch -p 1 -i $SRC/imlib-1.9.15-configure.patch
+	patch -p 1 -i $SRC/imlib-1.9.15-security.patch
+	patch -p 1 -i $SRC/imlib-1.9.15-bpp16-CVE-2007-3568.patch
+	patch -p 1 -i $SRC/imlib-1.9.15-fix-rendering.patch
+	patch -p 1 -i $SRC/imlib-1.9.15-asneeded.patch
+        patch -p 1 -i $SRC/imlib-1.9.15-newlibs.patch
+
+	mkdir m4
+	bzcat $SRC/gtk-1-for-imlib.m4.bz2 > m4/gtk-1-for-imlib.m4
+	autoreconf -i
+
+	CFLAGS="-std=c89 -D_GNU_SOURCE" ./configure \
+		--prefix=/usr \
+		--mandir=/usr/man
+
+	make
+	make DESTDIR=$PKG install
+}
+

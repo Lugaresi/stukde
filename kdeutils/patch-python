@@ -1,0 +1,15 @@
+--- configure.orig	2012-11-26 02:10:34.013970000 +0100
++++ configure	2012-11-26 02:11:43.452971659 +0100
+@@ -38883,10 +38883,10 @@ if test x$python_incdir = xno ||  test x
+ 
+ 
+ 
+-if test -z ""2.4""; then
++if test -z ""2.7""; then
+   version="1.5"
+ else
+-  version=""2.4""
++  version=""2.7""
+ fi
+ 
+ { echo "$as_me:$LINENO: checking for Python$version" >&5

@@ -1,0 +1,24 @@
+# Description:	Bluetooth libraries and utilities
+# URL:		http://www.bluez.org
+# Maintainer:	Alan Mizrahi, alan at mizrahi dot com dot ve
+# Depends on:	libusb
+
+name=openobex
+version=1.7.1
+release=1
+source=(http://downloads.sourceforge.net/project/openobex/openobex/$version/$name-$version-Source.tar.gz)
+
+build() {
+	# note: sysconfdir is /usr/etc instead of /etc on purpose
+	# in CRUX some people use /usr/etc for config files, I know its stupid
+
+	cd $name-$version-Source
+	mkdir build && cd build
+	cmake .. -DCMAKE_INSTALL_PREFIX=/usr -Wno-dev
+	make
+	make DESTDIR=$PKG install
+	mkdir -p $PKG/usr/lib
+	mv $PKG/usr/lib64/* $PKG/usr/lib
+	rm -rf $PKG/usr/lib64
+        sed -e s/lib64/lib/g -i $PKG/usr/lib/pkgconfig/openobex.pc
+}

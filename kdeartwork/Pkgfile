@@ -1,0 +1,29 @@
+# Description:	Additional themes, sounds, wallpapers, etc. for KDE 
+# URL:		http://www.kde.org
+# Maintainer:	Alan Mizrahi, alan at mizrahi dot com dot ve
+# Packager:	sten, nick dot steeves at shaw dot ca
+# Depends on:	kdebase xscreensaver
+
+name=kdeartwork
+version=3.5.10
+release=1
+source=(http://download.kde.org/Attic/$version/src/$name-$version.tar.bz2)
+
+build() {
+	# To prevent compilation of a particular component, set DO_NOT_COMPILE
+	# to a subset of:
+
+	# IconThemes emoticons icewm-themes kscreensaver kwin-styles
+	# kworldclock sounds styles wallpapers
+
+	# Eg:
+	# export DO_NOT_COMPILE="sounds wallpapers"
+
+	cd $name-$version
+	./configure --prefix=/usr \
+		--disable-debug \
+		--disable-dependency-tracking \
+		--enable-final
+	make
+	make DESTDIR=$PKG install
+}

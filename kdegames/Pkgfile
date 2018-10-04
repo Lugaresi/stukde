@@ -1,0 +1,41 @@
+# Description:	KDE games
+# URL:		http://www.kde.org
+# Maintainer:	Alan Mizrahi, alan at mizrahi dot com dot ve
+# Packager:	sten, nick dot steeves at shaw dot ca
+# Depends on:	kdebase
+
+name=kdegames
+version=3.5.10
+release=2
+source=(http://download.kde.org/Attic/$version/src/$name-$version.tar.bz2 kdegames-sh.patch)
+
+build() {
+	# To prevent compilation of a particular component, set DO_NOT_COMPILE
+	# to a subset of:
+
+	# doc kasteroids katomic kbackgammon kbattleship kblackbox kbounce
+	# kenolaba kgoldrunner kjumpingcube klines kmahjongg kmines knetwalk
+	# kolf konquest kpat kpoker kreversi ksame kshisen ksmiletris ksnake
+	# ksokoban kspaceduel ktron ktuberling kwin4 libksirtet lskat klickety
+	# kfouleggs ksirtet
+
+	# Eg:
+	# export DO_NOT_COMPILE=""
+
+	export DO_NOT_COMPILE="$DO_NOT_COMPILE doc"
+
+	cd $name-$version
+	patch -p1 -i $SRC/kdegames-sh.patch
+	aclocal
+	automake
+	perl admin/am_edit
+	autoconf
+	./configure --prefix=/usr \
+		--disable-setgid \
+		--disable-debug \
+		--disable-dependency-tracking \
+		--enable-final
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/doc
+}

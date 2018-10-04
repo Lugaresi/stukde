@@ -1,0 +1,31 @@
+drwxr-xr-x	root/root	usr/
+drwxr-xr-x	root/root	usr/bin/
+-rwxr-xr-x	root/root	usr/bin/obexftp
+-rwxr-xr-x	root/root	usr/bin/obexftpd
+drwxr-xr-x	root/root	usr/include/
+drwxr-xr-x	root/root	usr/include/bfb/
+-rw-r--r--	root/root	usr/include/bfb/bfb.h
+-rw-r--r--	root/root	usr/include/bfb/bfb_io.h
+drwxr-xr-x	root/root	usr/include/multicobex/
+-rw-r--r--	root/root	usr/include/multicobex/multi_cobex.h
+drwxr-xr-x	root/root	usr/include/obexftp/
+-rw-r--r--	root/root	usr/include/obexftp/client.h
+-rw-r--r--	root/root	usr/include/obexftp/obexftp.h
+-rw-r--r--	root/root	usr/include/obexftp/object.h
+-rw-r--r--	root/root	usr/include/obexftp/uuid.h
+drwxr-xr-x	root/root	usr/lib64/
+lrwxrwxrwx	root/root	usr/lib64/libbfb.so -> libbfb.so.0
+lrwxrwxrwx	root/root	usr/lib64/libbfb.so.0 -> libbfb.so.0.0.5
+-rwxr-xr-x	root/root	usr/lib64/libbfb.so.0.0.5
+lrwxrwxrwx	root/root	usr/lib64/libmulticobex.so -> libmulticobex.so.1
+lrwxrwxrwx	root/root	usr/lib64/libmulticobex.so.1 -> libmulticobex.so.1.0.1
+-rwxr-xr-x	root/root	usr/lib64/libmulticobex.so.1.0.1
+lrwxrwxrwx	root/root	usr/lib64/libobexftp.so -> libobexftp.so.0
+lrwxrwxrwx	root/root	usr/lib64/libobexftp.so.0 -> libobexftp.so.0.3.0
+-rwxr-xr-x	root/root	usr/lib64/libobexftp.so.0.3.0
+drwxr-xr-x	root/root	usr/lib64/pkgconfig/
+-rw-r--r--	root/root	usr/lib64/pkgconfig/obexftp.pc
+drwxr-xr-x	root/root	usr/man/
+drwxr-xr-x	root/root	usr/man/man1/
+-rwxr-xr-x	root/root	usr/man/man1/obexftp.1.gz
+-rwxr-xr-x	root/root	usr/man/man1/obexftpd.1.gz

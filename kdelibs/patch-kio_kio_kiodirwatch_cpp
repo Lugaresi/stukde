@@ -1,0 +1,17 @@
+diff -ur kdelibs-3.5.9/kio/kio/kdirwatch.cpp kdelibs-3.5.9-fix-flock-redefinition/kio/kio/kdirwatch.cpp
+--- kio/kio/kdirwatch.cpp.orig        2006-07-22 10:16:37.000000000 +0200
++++ kio/kio/kdirwatch.cpp        2008-08-23 00:59:17.000000000 +0200
+@@ -71,7 +71,13 @@
+ #include <linux/types.h>
+ // Linux kernel headers are documented to not compile
+ #define _S390_BITOPS_H
++#define flock linux_flock
++#define flock64 linux_flock64
++#define f_owner_ex linux_f_owner_ex
+ #include <linux/inotify.h>
++#undef flock
++#undef flock64
++#undef f_owner_ex
+ 
+ static inline int inotify_init (void)
+ {

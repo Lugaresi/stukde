@@ -1,0 +1,8 @@
+57bd7db21696061718fb96069ab6b4af  45-fix-libusb-detection.patch
+c627d8fb0f9afff94f3c687b5216bc06  hal-0.5.14.tar.bz2
+d8ce27a76d7cb13ce142cdc33816c8bd  hal.conf
+dc4400aaf0209127e97f05808b9d0d77  input.h
+526c98f7f13fb466ba221779b34f2aab  patch-glib
+5bbe3687734abdbce969183cfe99ee77  patch-v4l1
+cc3d04e7ac09e15f33c530725f43e641  rc.hald
+ae38373caa81e27cf59f72054f140642  videodev.h

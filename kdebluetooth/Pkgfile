@@ -1,0 +1,20 @@
+# Description:	Bluetooth integration for KDE
+# URL:		http://www.kmobiletools.org
+# Maintainer:	Alan Mizrahi, alan at mizrahi dot com dot ve
+# Depends on:	bluez, openobex, kdelibs
+
+name=kdebluetooth
+version=1.0beta2
+release=2
+source=(http://prdownloads.sf.net/kde-bluetooth/$name-${version/beta/_beta}.tar.bz2 kdebluetooth-gcc43.patch patch-kobex patch-gcc47)
+
+build () {
+	cd $name-${version/beta/_beta}
+	patch -p1 -i $SRC/kdebluetooth-gcc43.patch
+	patch -p0 -i $SRC/patch-kobex
+        patch -p0 -i $SRC/patch-gcc47
+	./configure --prefix=/usr --disable-debug --enable-final
+	cd kdebluetooth
+	make
+	make DESTDIR=$PKG install
+}

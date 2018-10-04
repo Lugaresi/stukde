@@ -1,0 +1,37 @@
+# Description:	Network-related programs and modules for KDE
+# URL:		http://www.kde.org
+# Maintainer:	Alan Mizrahi, alan at mizrahi dot com dot ve
+# Packager:	sten, nick dot steeves at shaw dot ca
+# Depends on:	ppp, kdebase, wireless-tools, libmeanwhile, v4l-utils
+
+name=kdenetwork
+version=3.5.10
+release=2
+source=(http://download.kde.org/Attic/$version/src/$name-$version.tar.bz2 lisa patch-kopete)
+
+build() {
+	# To prevent compilation of a particular component, set DO_NOT_COMPILE
+	# to a subset of:
+
+	# doc filesharing kdict kdnssd kfile-plugins kget kopete kpf kppp krdc
+	# krfb ksirc ktalkd lanbrowsing librss wifi knewsticker dcoprss
+
+	# Eg:
+	# export DO_NOT_COMPILE="kdict kget kppp ksirc ktalkd lanbrowsing ksirc wifi knewsticker"
+
+	export DO_NOT_COMPILE="doc $DO_NOT_COMPILE"
+
+	cd $name-$version
+	patch -p0 < $SRC/patch-kopete
+	./configure \
+		--prefix=/usr \
+		--disable-debug \
+		--disable-dependency-tracking \
+		--enable-final
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/doc
+
+	# If you don't compile lanbrowsing, disable this as well:
+	install -D ../lisa $PKG/etc/rc.d/lisa
+}

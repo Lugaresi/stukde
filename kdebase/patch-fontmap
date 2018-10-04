@@ -1,0 +1,11 @@
+--- kcontrol/kfontinst/kfontinst/Fontmap.cpp.orig	2012-10-09 19:45:31.015651544 +0200
++++ kcontrol/kfontinst/kfontinst/Fontmap.cpp	2012-10-09 19:47:31.936651040 +0200
+@@ -52,7 +52,7 @@ static char * findSpace(char *str)
+     return str;
+ }
+ 
+-static bool parseLine(const char *line, QString &ps, QString &fname, bool &isAlias)
++static bool parseLine(char *line, QString &ps, QString &fname, bool &isAlias)
+ {
+     static const int constMaxLen     = 127;
+     static const int constFileMaxLen = 1023;

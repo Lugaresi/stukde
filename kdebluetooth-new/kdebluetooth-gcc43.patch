@@ -1,0 +1,20 @@
+--- kdebluetooth-1.0_beta2/kdebluetooth/libkbluetooth/sdpdevice.cpp.orig	2009-05-29 23:29:45.407713495 +0900
++++ kdebluetooth-1.0_beta2/kdebluetooth/libkbluetooth/sdpdevice.cpp	2009-05-29 23:30:15.385774951 +0900
+@@ -9,6 +9,7 @@
+  *   (at your option) any later version.                                   *
+  ***************************************************************************/
+ 
++#include <stdlib.h>
+ #include <assert.h>
+ #include "sdpdevice.h"
+ #include <kdebug.h>
+--- kdebluetooth-1.0_beta2/kdebluetooth/kbluetooth/sdprecord.cpp.orig	2009-05-29 23:32:17.574362754 +0900
++++ kdebluetooth-1.0_beta2/kdebluetooth/kbluetooth/sdprecord.cpp	2009-05-29 23:32:32.734485822 +0900
+@@ -11,6 +11,7 @@
+ 
+ #include "sdprecord.h"
+ 
++#include <stdlib.h>
+ #include <qdom.h>
+ #include <kdebug.h>
+ #include <bluetooth/sdp_lib.h>

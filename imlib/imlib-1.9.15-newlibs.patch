@@ -1,0 +1,271 @@
+--- a/gdk_imlib/io-gif.c.orig	2012-11-14 11:36:21.643138155 +0000
++++ b/gdk_imlib/io-gif.c	2012-11-14 11:36:36.480138603 +0000
+@@ -9,6 +9,7 @@ unsigned char loader_gif (FILE *f, int *
+ }
+ #else
+ #include <gif_lib.h>
++void PrintGifError(int errcode);
+
+ unsigned char      *
+ loader_gif(FILE *f, int *w, int *h, int *t)
+@@ -23,6 +24,7 @@ loader_gif(FILE *f, int *w, int *h, int
+   int                 intjump[] = {8, 8, 4, 2};
+   int                 istransp, transp;
+   int                 fd;
++  int                 gifError;
+
+   done = 0;
+   istransp = 0;
+@@ -30,7 +30,7 @@ loader_gif(FILE *f, int *w, int *h, int
+   fd = fileno(f);
+   /* Apparently rewind(f) isn't sufficient */
+   lseek(fd, (long) 0, 0);
+-  gif = DGifOpenFileHandle(fd);
++  gif = DGifOpenFileHandle(fd, &gifError);
+ 
+   transp = -1;
+   data = NULL;
+@@ -43,14 +45,14 @@ loader_gif(FILE *f, int *w, int *h, int
+     {
+       if (DGifGetRecordType(gif, &rec) == GIF_ERROR)
+ 	{
+-	  PrintGifError();
++	  PrintGifError(gifError);
+ 	  rec = TERMINATE_RECORD_TYPE;
+ 	}
+       if ((rec == IMAGE_DESC_RECORD_TYPE) && (!done))
+ 	{
+ 	  if (DGifGetImageDesc(gif) == GIF_ERROR)
+ 	    {
+-	      PrintGifError();
++	      PrintGifError(gifError);
+ 	      rec = TERMINATE_RECORD_TYPE;
+ 	    }
+ 	  *w = gif->Image.Width;
+@@ -62,13 +64,13 @@ loader_gif(FILE *f, int *w, int *h, int
+ 	  rows = malloc(*h * sizeof(GifRowType *));
+ 	  if (!rows)
+ 	    {
+-	      DGifCloseFile(gif);
++	      DGifCloseFile(gif, &gifError);
+ 	      return NULL;
+ 	    }
+ 	  data = _gdk_malloc_image(*w, *h);
+ 	  if (!data)
+ 	    {
+-	      DGifCloseFile(gif);
++	      DGifCloseFile(gif, &gifError);
+ 	      free(rows);
+ 	      return NULL;
+ 	    }
+@@ -79,7 +81,7 @@ loader_gif(FILE *f, int *w, int *h, int
+ 	      rows[i] = malloc(*w * sizeof(GifPixelType));
+ 	      if (!rows[i])
+ 		{
+-		  DGifCloseFile(gif);
++		  DGifCloseFile(gif, &gifError);
+ 		  for (i = 0; i < *h; i++)
+ 		    if (rows[i])
+ 		      free(rows[i]);
+@@ -168,7 +170,7 @@ loader_gif(FILE *f, int *w, int *h, int
+            }
+        }
+     }
+-  DGifCloseFile(gif);
++  DGifCloseFile(gif, &gifError);
+   for (i = 0; i < *h; i++)
+     free(rows[i]);
+   free(rows);
+--- a/gdk_imlib/io-png.c.orig	2012-11-14 11:37:54.487140724 +0000
++++ b/gdk_imlib/io-png.c	2012-11-14 11:45:23.123153250 +0000
+@@ -40,13 +40,13 @@ loader_png (FILE * f, int *w, int *h, in
+       return NULL;
+     }
+ 
+-  if (setjmp(png_ptr->jmpbuf))
++  if (setjmp(png_jmpbuf(png_ptr)))
+     {
+       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       return NULL;
+     }
+ 
+-  if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
++  if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGB_ALPHA)
+     {
+       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       return NULL;
+@@ -275,13 +275,13 @@ inline_png(unsigned char *data, int data
+       return NULL;
+     }
+   
+-  if (setjmp(png_ptr->jmpbuf))
++  if (setjmp(png_jmpbuf(png_ptr)))
+     {
+       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       return NULL;
+     }
+   
+-  if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
++  if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGB_ALPHA)
+     {
+       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       return NULL;
+@@ -440,13 +440,13 @@ _loader_alpha_png (FILE * f, int *w, int
+ 		return NULL;
+ 	}
+ 	
+-	if (setjmp(png_ptr->jmpbuf))
++	if (setjmp(png_jmpbuf(png_ptr)))
+ 	{
+ 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+ 		return NULL;
+ 	}
+ 	
+-	if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
++	if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGB_ALPHA)
+ 	{
+ 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+ 		return NULL;
+@@ -635,7 +635,7 @@ saver_png (GdkImlibImage *im, char *file
+ 	      png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+ 	      return 0;
+ 	    }
+-	  if (setjmp(png_ptr->jmpbuf))
++	  if (setjmp(png_jmpbuf(png_ptr)))
+ 	    {
+ 	      fclose(f);
+ 	      png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+--- a/Imlib/load.c.orig	2012-11-14 11:46:14.811154635 +0000
++++ b/Imlib/load.c	2012-11-14 11:47:08.465156193 +0000
+@@ -197,12 +197,12 @@ _LoadPNG(ImlibData * id, FILE * f, int *
+       png_destroy_read_struct(&png_ptr, NULL, NULL);
+       return NULL;
+     }
+-  if (setjmp(png_ptr->jmpbuf))
++  if (setjmp(png_jmpbuf(png_ptr)))
+     {
+       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       return NULL;
+     }
+-  if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
++  if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGB_ALPHA)
+     {
+       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       return NULL;
+@@ -428,6 +428,18 @@ _LoadTIFF(ImlibData * id, FILE *f, char
+ #endif /* HAVE_LIBTIFF */
+
+ #ifdef HAVE_LIBGIF
++
++static void
++PrintGifError(int errcode)
++{
++  char *Err = GifErrorString(errcode);
++
++  if (Err != NULL)
++    fprintf(stderr, "\nGIF-LIB error: %s.\n", Err);
++  else
++    fprintf(stderr, "\nGIF-LIB undefined error %d.\n", errcode);
++}
++
+ unsigned char      *
+ _LoadGIF(ImlibData * id, FILE *f, int *w, int *h, int *t)
+ {
+@@ -441,6 +453,7 @@ _LoadGIF(ImlibData * id, FILE *f, int *w
+   int                 intjump[] = {8, 8, 4, 2};
+   int                 istransp, transp;
+   int                 fd;
++  int                 gifError;
+ 
+   done = 0;
+   istransp = 0;
+@@ -451,7 +463,7 @@ _LoadGIF(ImlibData * id, FILE *f, int *w
+   fd = fileno(f);
+   /* Apparently rewind(f) isn't sufficient */
+   lseek(fd, (long) 0, 0);
+-  gif = DGifOpenFileHandle(fd);
++  gif = DGifOpenFileHandle(fd, &gifError);
+ 
+   if (!gif)
+     return NULL;
+@@ -472,7 +472,7 @@ _LoadGIF(ImlibData * id, FILE *f, int *w
+     {
+       if (DGifGetRecordType(gif, &rec) == GIF_ERROR)
+ 	{
+-	  PrintGifError();
++	  PrintGifError(gifError);
+ 	  rec = TERMINATE_RECORD_TYPE;
+ 	}
+       if ((rec == IMAGE_DESC_RECORD_TYPE) && (!done))
+@@ -479,7 +479,7 @@ _LoadGIF(ImlibData * id, FILE *f, int *w
+ 	{
+ 	  if (DGifGetImageDesc(gif) == GIF_ERROR)
+ 	    {
+-	      PrintGifError();
++	      PrintGifError(gifError);
+ 	      rec = TERMINATE_RECORD_TYPE;
+ 	    }
+ 	  *w = gif->Image.Width;
+@@ -478,13 +491,13 @@ _LoadGIF(ImlibData * id, FILE *f, int *w
+ 	  rows = malloc(*h * sizeof(GifRowType *));
+ 	  if (!rows)
+ 	    {
+-	      DGifCloseFile(gif);
++	      DGifCloseFile(gif, &gifError);
+ 	      return NULL;
+ 	    }
+ 	  data = _imlib_malloc_image(*w, *h);
+ 	  if (!data)
+ 	    {
+-	      DGifCloseFile(gif);
++	      DGifCloseFile(gif, &gifError);
+ 	      free(rows);
+ 	      return NULL;
+ 	    }
+@@ -495,7 +508,7 @@ _LoadGIF(ImlibData * id, FILE *f, int *w
+ 	      rows[i] = malloc(*w * sizeof(GifPixelType));
+ 	      if (!rows[i])
+ 		{
+-		  DGifCloseFile(gif);
++		  DGifCloseFile(gif, &gifError);
+ 		  for (i = 0; i < *h; i++)
+ 		    if (rows[i])
+ 		      free(rows[i]);
+@@ -584,7 +597,7 @@ _LoadGIF(ImlibData * id, FILE *f, int *w
+ 	    }
+ 	}
+     }
+-  DGifCloseFile(gif);
++  DGifCloseFile(gif, &gifError);
+   for (i = 0; i < *h; i++)
+     free(rows[i]);
+   free(rows);
+--- a/Imlib/utils.c.orig	2012-11-14 11:48:19.095158118 +0000
++++ b/Imlib/utils.c	2012-11-14 11:49:05.939159313 +0000
+@@ -1982,13 +1982,13 @@ Imlib_inlined_png_to_image(ImlibData *id
+       return NULL;
+     }
+   
+-  if (setjmp(png_ptr->jmpbuf))
++  if (setjmp(png_jmpbuf(png_ptr)))
+     {
+       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       return NULL;
+     }
+   
+-  if (info_ptr->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
++  if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGB_ALPHA)
+     {
+       png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       return NULL;
+--- a/Imlib/save.c.orig	2012-11-14 11:49:37.797160340 +0000
++++ b/Imlib/save.c	2012-11-14 11:50:19.202161502 +0000
+@@ -342,7 +342,7 @@ Imlib_save_image(ImlibData * id, ImlibIm
+ 	      png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
+ 	      return 0;
+ 	    }
+-	  if (setjmp(png_ptr->jmpbuf))
++	  if (setjmp(png_jmpbuf(png_ptr)))
+ 	    {
+ 	      fclose(f);
+ 	      png_destroy_write_struct(&png_ptr, (png_infopp) NULL);

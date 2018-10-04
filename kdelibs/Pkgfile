@@ -1,0 +1,55 @@
+# Description:	Base set of libraries needed by KDE programs
+# URL:		http://www.kde.org
+# Maintainer:	Alan Mizrahi, alan at mizrahi dot com dot ve
+# Packager:	sten, nick dot steeves at shaw dot ca
+# Depends on:	sudo, hicolor-icon-theme, gnupg, gpgme, aspell, cups, openldap, arts, libart_lgpl, imlib, libidn, openexr
+# Nice to have: gnupg, gpgme
+
+name=kdelibs
+version=3.5.10
+release=2
+source=(http://download.kde.org/Attic/$version/src/$name-$version.tar.bz2 http://www.kde-look.org/CONTENT/content-files/10888-bt.tar.gz \
+	patch-kio_kio_kiodirwatch_cpp patch-kio_kssl_kopenssl_cc patch-kio_kssl_kopenssl_h patch-kio_kssl_ksmimecrypto_cc patch-kio_kssl_ksslcertificate_cc \
+	patch-kioslave_ftp_ftp_cc patch-kdeprint_cups_cupsdconf2_cups-util_c \ 
+	patch-kate_part_katehighlight_cpp patch-kdeprint-cups16support \
+	patch-kdeprint-cups2support patch-std patch-kdelibs-3.5.10-gcc6.patch patch-kdelibs-3.5.10-gcc7.patch)
+
+build() {
+	# To prevent compilation of a particular component, set DO_NOT_COMPILE
+	# to a subset of:
+
+	# dcop libltdl kdefx kdecore kunittest kdeui kdesu kjs kwallet kio arts
+	# dnssd kab kconf_update kded kdoctools kimgio kioslave knewstuff
+	# kparts kresources kstyles kutils libkmid libkscreensaver licenses
+	# mimetypes pics doc kcert kinit kdeprint kabc kspell2 kmdi kcmshell
+	# khtml interfaces kdewidgets kate
+
+	# Eg:
+	# export DO_NOT_COMPILE="kunittest"
+
+	export DO_NOT_COMPILE="$DO_NOT_COMPILE doc"
+
+	cd $name-$version
+	for i in `ls $SRC/patch-*`;
+	   do patch -p0 < $i;
+	done
+	./configure --prefix=/usr \
+		--with-distribution="CRUX" \
+		--enable-sendfile \
+		--enable-inotify \
+		--enable-mitshm \
+		--with-alsa \
+		--with-ssl \
+		--without-hspell \
+		--disable-debug \
+		--disable-dependency-tracking \
+		--enable-final
+	make
+	make DESTDIR=$PKG install
+	cd ../bt
+	cp -r * $PKG/usr/share/icons/crystalsvg/
+	echo Icon=bt >> $PKG/usr/share/mimelnk/application/x-bittorrent.desktop
+	echo PrintSystem=cups >> $PKG/usr/share/config/kdeprintrc
+	rm -rf $PKG/usr/share/icons/hicolor/index.theme $PKG/usr/include/ltdl.h	$PKG/usr/share/doc
+	find $PKG/usr/share/apps -depth \( -name LICENSES -o -name README\* -o -name ChangeLog -o -name TODO -o -name BUGS \) -exec rm -rf {} \;
+}

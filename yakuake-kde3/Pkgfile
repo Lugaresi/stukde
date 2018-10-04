@@ -1,0 +1,17 @@
+# Description:	Quake-like terminal for KDE3
+# URL:		
+# Maintainer:	Stuka
+# Depends on:	kdelibs, libpng, libjpeg
+
+name=yakuake-kde3
+version=2.8.1
+release=1
+source=(http://downloads.sourceforge.net/project/yakuake.berlios/yakuake-$version.tar.bz2)
+
+build () {
+	cd yakuake-$version
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+        rm -rf $PKG/usr/share/locale
+}
